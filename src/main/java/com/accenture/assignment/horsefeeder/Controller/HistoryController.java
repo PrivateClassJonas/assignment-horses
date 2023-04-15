@@ -33,7 +33,7 @@ public class HistoryController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
-    @GetMapping("/")
+    @GetMapping("/missed")
     public ResponseEntity<List<MissedFeedingDto>> showMissed() {
         Optional<List<MissedFeedingDto>> response = historyService.showMissed();
         if (response.isEmpty()) ResponseEntity.badRequest().build();
