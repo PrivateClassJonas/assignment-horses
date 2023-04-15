@@ -2,17 +2,17 @@ package com.accenture.assignment.horsefeeder.DTO;
 
 public class HistoryDto {
     private String horseGuid;
-    private Long foodId;
+    private String horseName;
     private String time;
     private int amount;
     private String status;
 
-    public Long getFoodId() {
-        return foodId;
+    public String getHorseName() {
+        return horseName;
     }
 
-    public void setFoodId(Long foodId) {
-        this.foodId = foodId;
+    public void setHorseName(String horseName) {
+        this.horseName = horseName;
     }
 
     public String getTime() {

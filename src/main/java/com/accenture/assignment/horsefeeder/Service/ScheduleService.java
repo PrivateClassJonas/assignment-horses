@@ -51,7 +51,7 @@ public class ScheduleService {
 
     public Optional<List<HorseDto>> showEligableHorses(TimeDto time) throws ParseException {
         Date dtime = null;
-        if(time == null || time.getTime().length()==0){
+        if(time == null || time.getTime() == null ||  time.getTime().length()==0){
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.set(Calendar.HOUR_OF_DAY, LocalTime.now().getHour());
