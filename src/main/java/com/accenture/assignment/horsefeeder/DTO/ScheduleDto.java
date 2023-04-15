@@ -5,7 +5,7 @@ public class ScheduleDto {
     private String start;
     private String end;
     private String horseName;
-    private String horseGUID;
+    private String horseGuid;
     private String foodName;
     private Long foodId;
 
@@ -33,12 +33,12 @@ public class ScheduleDto {
         this.horseName = horseName;
     }
 
-    public String getHorseGUID() {
-        return horseGUID;
+    public String getHorseGuid() {
+        return horseGuid;
     }
 
-    public void setHorseGUID(String horseGUID) {
-        this.horseGUID = horseGUID;
+    public void setHorseGuid(String horseGuid) {
+        this.horseGuid = horseGuid;
     }
 
     public String getFoodName() {
