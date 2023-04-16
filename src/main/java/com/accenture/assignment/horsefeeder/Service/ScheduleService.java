@@ -1,12 +1,10 @@
 package com.accenture.assignment.horsefeeder.Service;
 
+import com.accenture.assignment.horsefeeder.DTO.HistoryDto;
 import com.accenture.assignment.horsefeeder.DTO.HorseDto;
 import com.accenture.assignment.horsefeeder.DTO.ScheduleDto;
 import com.accenture.assignment.horsefeeder.DTO.TimeDto;
-import com.accenture.assignment.horsefeeder.Entities.Food;
-import com.accenture.assignment.horsefeeder.Entities.Horse;
-import com.accenture.assignment.horsefeeder.Entities.Schedule;
-import com.accenture.assignment.horsefeeder.Entities.Stable;
+import com.accenture.assignment.horsefeeder.Entities.*;
 import com.accenture.assignment.horsefeeder.Mapper.HorseMapper;
 import com.accenture.assignment.horsefeeder.Mapper.ScheduleMapper;
 import com.accenture.assignment.horsefeeder.Repository.FoodRepository;
@@ -73,6 +71,7 @@ public class ScheduleService {
             int compare2 = dtime.compareTo(end);
             if( compare1 == 0 || compare1 == compare2){
                 horseList.get().add((horseRepository.findByGuid(schedule.getHorse().getGuid())).get());
+                break;
             }
         }
         if(horseList.get().isEmpty()){
@@ -82,12 +81,44 @@ public class ScheduleService {
         List<HorseDto> result = horseMapper.horseTohorseDtos(horseList.get());
         return Optional.ofNullable(result);
     }
+    public Optional<ScheduleDto> showScheduleForFeeding(TimeDto time) throws ParseException {
+        //List<ScheduleDto> scheduleList = scheduleMapper.scheduleToscheduleDtos(scheduleRepository.findAll());
+        ScheduleDto scheduleDto = new ScheduleDto();
+        scheduleDto.setStart(time.getTime());
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+        Date timeToCheck = new SimpleDateFormat("HH:mm").parse(scheduleDto.getStart());
+
+        for (Schedule schedule : scheduleList) {
+            Date start = new SimpleDateFormat("HH:mm").parse(schedule.getStart());
+            Date end = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
+            if(timeToCheck.compareTo(start) == 0 || (timeToCheck.compareTo(start)>0 && timeToCheck.compareTo(end)<0)){
+                return Optional.ofNullable(scheduleMapper.scheduleToScheduleDto(schedule));
+            }
+        }
+        return Optional.empty();
+    }
+
 
     public Optional<ScheduleDto> addNewSchedule(ScheduleDto scheduleDto) throws ParseException {
         if (scheduleDto == null) {
             return Optional.empty();
         }
         if(!checkForOverlap(scheduleDto)){
+            return Optional.empty();
+        }
+        Date start = new SimpleDateFormat("HH:mm").parse(scheduleDto.getStart());
+        Date end = new SimpleDateFormat("HH:mm").parse(scheduleDto.getEnd());
+        if(start.after(end)){
+            return Optional.empty();
+        }
+        List<Schedule> schedules = scheduleRepository.findAll();
+        int index = 0;
+        for (Schedule schedule : schedules) {
+            if(scheduleDto.getHorseGuid().equals(schedule.getHorse().getGuid())){
+                index++;
+            }
+        }
+        if(index>=5){
             return Optional.empty();
         }
         Optional<Food> food = foodRepository.findById(scheduleDto.getFoodId());
@@ -98,11 +129,13 @@ public class ScheduleService {
         Schedule schedule = scheduleMapper.scheduleDtoToSchedule(scheduleDto);
         schedule.setFood(food.get());
         schedule.setHorse(horse.get());
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
         ScheduleDto result = scheduleMapper.scheduleToScheduleDto(savedSchedule);
         return Optional.ofNullable(result);
 
     }
+
 
     private boolean checkForOverlap(ScheduleDto scheduleDto) throws ParseException {
         List<Schedule> scheduleList = scheduleRepository.findAll();

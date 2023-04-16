@@ -23,6 +23,8 @@ public class Schedule {
     @JoinColumn(name = "food_id")
     private Food food;
 
+
+
     public Long getId() {
         return id;
     }
@@ -62,4 +64,6 @@ public class Schedule {
     public void setFood(Food food) {
         this.food = food;
     }
+
+
 }

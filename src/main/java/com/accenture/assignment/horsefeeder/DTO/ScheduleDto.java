@@ -56,4 +56,6 @@ public class ScheduleDto {
     public void setFoodId(Long foodId) {
         this.foodId = foodId;
     }
+
+
 }

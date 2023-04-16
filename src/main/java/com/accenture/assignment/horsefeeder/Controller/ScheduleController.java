@@ -1,5 +1,6 @@
 package com.accenture.assignment.horsefeeder.Controller;
 
+import com.accenture.assignment.horsefeeder.DTO.HistoryDto;
 import com.accenture.assignment.horsefeeder.DTO.HorseDto;
 import com.accenture.assignment.horsefeeder.DTO.ScheduleDto;
 import com.accenture.assignment.horsefeeder.DTO.TimeDto;
@@ -39,5 +40,22 @@ public class ScheduleController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
+   /* @PutMapping(path="/{id}")
+    public @ResponseBody ResponseEntity<ScheduleDto> updateStatus(
+            @PathVariable("id") Long id,
+            @RequestBody String status){
+        Optional<ScheduleDto> response = scheduleService.updateStatus(id, status);
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }*/
+
+
+    /*@PutMapping(path = "/{horseGuid}")
+    public @ResponseBody ResponseEntity<ScheduleDto> releaseFood(
+            @PathVariable("horseGuid") String horseGuid) throws ParseException {
+        Optional<ScheduleDto> response = scheduleService.releaseFood(horseGuid);
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }*/
 
 }

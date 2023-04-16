@@ -1,8 +1,8 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
 public class HistoryDto {
-    private String horseGuid;
     private String horseName;
+    private String horseGuid;
     private String time;
     private int amount;
     private String status;

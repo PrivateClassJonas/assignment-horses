@@ -1,9 +1,6 @@
 package com.accenture.assignment.horsefeeder.Controller;
 
-import com.accenture.assignment.horsefeeder.DTO.HistoryDto;
-import com.accenture.assignment.horsefeeder.DTO.HorseDto;
-import com.accenture.assignment.horsefeeder.DTO.MissedFeedingDto;
-import com.accenture.assignment.horsefeeder.DTO.StableDto;
+import com.accenture.assignment.horsefeeder.DTO.*;
 import com.accenture.assignment.horsefeeder.Service.HistoryService;
 import com.accenture.assignment.horsefeeder.Service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +24,23 @@ public class HistoryController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
+
+    @PostMapping(path = "/missed/{horseGuid}")
+    public @ResponseBody ResponseEntity<HistoryDto> setMissedFeeding(
+            @PathVariable("horseGuid") String horseGuid) throws ParseException {
+        Optional<HistoryDto> response = historyService.setMissedFeeding(horseGuid);
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }
     @GetMapping("/")
     public ResponseEntity<List<HistoryDto>> showHistories() {
         Optional<List<HistoryDto>> response = historyService.showHistories();
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }
+    @GetMapping("/eligable")
+    public ResponseEntity<MissedEligibleDto> showMissedEligable() throws ParseException {
+        Optional<MissedEligibleDto> response = historyService.showMissedEligible();
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
@@ -39,6 +50,14 @@ public class HistoryController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
+    @GetMapping("/amount")
+    public ResponseEntity<List<MissedAmountDto>> showMissedAmount() {
+        Optional<List<MissedAmountDto>> response = historyService.showMissedAmount();
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }
+
+
 
 
 
