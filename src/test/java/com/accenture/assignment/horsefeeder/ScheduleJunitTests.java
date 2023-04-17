@@ -218,6 +218,21 @@ public class ScheduleJunitTests {
 
     }
 
+    @Test
+    public void deleteScheduleByIdTrue()throws Exception{
+        List<Schedule> schedules = scheduleRepository.findAll();
+
+        MvcResult mvcResult = null;
+        mvcResult = mvc.perform(delete("/schedule/"+schedules.get(0).getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ScheduleDto actual = new ObjectMapper().readValue(content, ScheduleDto.class);
+        assertEquals("12:00", actual.getStart());
+        assertEquals("12:30", actual.getEnd());
+    }
+
     private Horse createHorse(String guid, String name, String nickname, String breed, String owner, Stable stable){
         Horse horse = new Horse();
         horse.setGuid(guid);
