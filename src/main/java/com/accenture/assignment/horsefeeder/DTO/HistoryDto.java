@@ -1,10 +1,17 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
+/**
+ * Die Klasse, die angibt welches Pferd, zu welcher Uhrzeit gegessen hat, wieviel das Pferd übrig gelassen hat oder ob das Pferd sein Futter verpasst hat
+ */
 public class HistoryDto {
     private String horseName;
     private String horseGuid;
     private String time;
     private int amount;
+    /**
+     * 'done' : Pferd hat gegessen
+     * 'missed' : Pferd hat das Futter verpasst
+     */
     private String status;
 
     public String getHorseName() {

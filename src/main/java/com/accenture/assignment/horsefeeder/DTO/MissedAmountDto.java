@@ -1,7 +1,16 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
+/**
+ * Die Klasse, die angibt wie viel Futter ein gewissen Pferd schon verpasst hat
+ */
 public class MissedAmountDto {
+    /**
+     * GUID von dem Pferd
+     */
     private String guid;
+    /**
+     * Wieviel Futter das pferd verpasst hat
+     */
     private Integer amount;
 
     public MissedAmountDto (String guid, Integer amount){

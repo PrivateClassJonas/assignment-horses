@@ -4,13 +4,27 @@ import com.accenture.assignment.horsefeeder.Entities.Food;
 
 import java.util.Set;
 
+/**
+ * Die Plan Klasse, die für die Verwendung von Plan Objekten in Abfragen und Service Methoden verwendet wird
+ */
 public class ScheduleDto {
-
+    /**
+     * Von wann das Pferd essen darf
+     */
     private String start;
+    /**
+     * Bis wann das Pferd essen darf
+     */
     private String end;
     private String horseName;
+    /**
+     * Welches Pferd essen darf
+     */
     private String horseGuid;
     private String foodName;
+    /**
+     * Was das Pferd essen darf
+     */
     private Long foodId;
 
     public String getStart() {

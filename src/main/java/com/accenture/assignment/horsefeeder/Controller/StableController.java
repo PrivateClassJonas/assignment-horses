@@ -11,6 +11,9 @@ import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
+/**
+ * Die Klasse StableController ist ein REST-Controller der StableDto Objekte durch CRUD-Operationen bereitstellt/manipuliert/löscht
+ */
 @RestController
 @RequestMapping("/stable")
 public class StableController {
@@ -18,6 +21,11 @@ public class StableController {
     @Autowired
     private StableService stableService;
 
+    /**
+     * HTTP GET Request, der alle Ställe ausgibt
+     * @return ResponseEntity<List<StableDto>>
+     *     ResponseEntity, dass eine Liste aller Ställe zurückgibt
+     */
     @GetMapping("/")
     public ResponseEntity<List<StableDto>> showStables() {
         Optional<List<StableDto>> response = stableService.showStables();
@@ -25,6 +33,14 @@ public class StableController {
         return ResponseEntity.ok(response.get());
     }
 
+    /**
+     * HTTP GET Request, dass einen bestimmten Stall ausgibt
+     * @param stableId
+     *     Die ID von dem Stall, der ausgegeben werden soll
+     * @return ResponseEntity<StableDto>
+     *     ResponseEntity, dass den gewuschten Stall zurpckgibt
+     *
+     */
     @GetMapping("/{stableId}")
     public ResponseEntity<StableDto> showStableById(
             @PathVariable("stableId") Long stableId) {
@@ -33,6 +49,13 @@ public class StableController {
         return ResponseEntity.ok(response.get());
     }
 
+    /**
+     * HTTP POST Request, der einen neuen Stall hinzufügt
+     * @param stableDto
+     *     Der neue Stall, der hinzugefügt werden soll
+     * @return ResponseEntity<StableDto>
+     *     ResponseEntity, dass den neuen Stall zurückgibt
+     */
     @PostMapping(path = "/")
     public @ResponseBody ResponseEntity<StableDto> addNewStable(
             @RequestBody StableDto stableDto) {
@@ -41,6 +64,13 @@ public class StableController {
         return ResponseEntity.ok(response.get());
     }
 
+    /**
+     * HTTP DELETE Request, der einen bestimmten Stall löscht
+     * @param stableId
+     *     Die ID von dem Stall, der gelöscht werden soll
+     * @return ResponseEntity<StableDto>
+     *     ResponseEntity, dass den gelöschten Stall zurpckgibt
+     */
     @DeleteMapping("/{stableId}")
     public @ResponseBody ResponseEntity<StableDto> deleteStableById(
             @PathVariable("stableId") Long stableId) {
@@ -49,6 +79,15 @@ public class StableController {
         return ResponseEntity.ok(response.get());
     }
 
+    /**
+     * HTTP PUT Request, der einen bestimmten Stall ändert
+     * @param stableId
+     *     Die ID von dem Stall der geändert werden soll
+     * @param stableDto
+     *     Der neue Stall
+     * @return ResponseEntity<StableDto>
+     *     ResponseEntity, dass den neuen Stall zurückgibt
+     */
     @RequestMapping(value = "/{stableID}", method = PUT)
     public @ResponseBody ResponseEntity<StableDto> updateStableByID(
             @PathVariable("stableID") Long stableId,

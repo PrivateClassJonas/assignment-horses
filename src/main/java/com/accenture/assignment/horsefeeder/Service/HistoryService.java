@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Geschäftslogik gür alle History Abfragen
+ */
 @Service
 public class HistoryService {
     @Autowired
@@ -38,6 +41,16 @@ public class HistoryService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    /**
+     * erstellt einen neuen History Eintrag für ein bestimmtes Horse Objekt zu einer bestimmten Uhrzeit und setzt diesen auf "missed" --> Das Pferd hat das Essen verpasst
+     * @param guid
+     *     Die GUID von dem Pferd, dass sein Essen verpasst hat
+     * @param time
+     *     Die Uhrzeit, um zu überprüfen, ob das Pferd sein Futter wurklich verpasst hat --> nachschauen bei allen Schedule Objekten
+     * @return Optional<HistoryDto>
+     *     Optional von einem History Objekt, dass den neuen Eintraf anzeigt --> Optional leer wenn nichts eingetragen wurde
+     * @throws ParseException
+     */
     public Optional<HistoryDto> setMissedFeeding(String guid, TimeDto time) throws ParseException {
         Optional<ScheduleDto> schedule = scheduleService.showScheduleForFeeding(time);
         Horse horse = horseRepository.findByGuid(guid).get();
@@ -57,6 +70,11 @@ public class HistoryService {
         return Optional.ofNullable(result);
     }
 
+    /**
+     * zeigt wieviel Futter ein bestimmtes Pferd verpasst hat
+     * @return Optional<List<MissedAmountDto>>
+     *     Optional von einer Liste von MissedAmountDto Objekten
+     */
     public Optional<List<MissedAmountDto>> showMissedAmount() {
         List<History> historyList = historyRepository.findAll();
         List<Horse> horseList = horseRepository.findAll();
@@ -81,7 +99,17 @@ public class HistoryService {
         return Optional.ofNullable(missedAmountDtos);
     }
 
-
+    /**
+     * überprüft, ob ein bestimmtes Pferd zu einer bestimmten Zeit essen darf, und ob das Pferd schon gegessen hat und trägt anschließen. wenn das Pferd essen darf
+     * einen neuen History Eintrag ein
+     * @param guid
+     *     GUID von dem Pferd, dass essen will
+     * @param time
+     *     Uhrzeit, an der das Pferd essen will
+     * @return Optional<HistoryDto>
+     *     Optional von einem neuen History Objekt --> Optional leer wenn kein Futter freigegeben wurde
+     * @throws ParseException
+     */
     public Optional<HistoryDto> releaseFood(String guid, TimeDto time) throws ParseException {
         List<History> histories = historyRepository.findAll();
         Optional<List<HorseDto>> horses = scheduleService.showEligableHorses(time);
@@ -130,7 +158,11 @@ public class HistoryService {
         return Optional.ofNullable(result);
     }
 
-
+    /**
+     * zeigt alle History Objekte
+     * @return Optional<List<HistoryDto>>
+     *     Optional von einer Liste von History Objekten
+     */
     public Optional<List<HistoryDto>> showHistories() {
         List<History> historyList = historyRepository.findAll();
         if (historyList.isEmpty()) {
@@ -143,6 +175,14 @@ public class HistoryService {
         return Optional.ofNullable(historyDtoList);
     }
 
+    /**
+     * zeigt welche Pferde Ihr Essen verpasst haben und für wieviele Stunden diese nicht gegessen haben
+     * @param time
+     *      uhrzeit an dem alles überprüft wird
+     * @return Optional<List<MissedEligibleDto>>
+     *     Optional von einer Liste von MissedEligableDtos
+     * @throws ParseException
+     */
     public Optional<List<MissedEligibleDto>> showMissedEligible(TimeDto time) throws ParseException {
         Optional<List<HorseDto>> horses = scheduleService.showEligableHorses(time);
         List<History> historyList = historyRepository.findAll();
@@ -176,6 +216,11 @@ public class HistoryService {
         return Optional.ofNullable(missedEligible);
     }
 
+    /**
+     * zeigt welche Pferde Ihr Futter verpasst haben, wie oft sie es verpasst haben und wieviel sie verpasst haben
+     * @return Optional<List<MissedFeedingDto>>
+     *     Optional von einer Liste von MissedFeedingDtos
+     */
     public Optional<List<MissedFeedingDto>> showMissed() {
         List<History> historyList = historyRepository.findAll();
         List<Horse> horseList = horseRepository.findAll();

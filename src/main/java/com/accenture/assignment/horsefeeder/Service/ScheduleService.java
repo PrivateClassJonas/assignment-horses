@@ -15,6 +15,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
 
+/**
+ * Geschäftslogik aller Schedule Abfragen
+ */
 @Service
 public class ScheduleService {
     @Autowired
@@ -31,6 +34,11 @@ public class ScheduleService {
         this.foodRepository = foodRepository;
     }
 
+    /**
+     * zeigt alle Schedule Objekte an
+     * @return Optional<List<ScheduleDto>>
+     *     Optional von einer Liste von allen Schedule Objekten
+     */
     public Optional<List<ScheduleDto>> showSchedules() {
         List<Schedule> scheduleList = scheduleRepository.findAll();
         if (scheduleList.isEmpty()) {
@@ -43,6 +51,14 @@ public class ScheduleService {
         return Optional.ofNullable(scheduleDtoList);
     }
 
+    /**
+     * zeigt alle Horse Objekte, die zu eriner bestimmten Uhrzeit essen dürfen
+     * @param time
+     *     Die Uhrzeit, zu der das Pferd essen soll
+     * @return Optional<List<HorseDto>>
+     *      Optional von einer Liste von allen Horse Objekten, die zu der gewünschten Uhrzeit essen dürfen
+     * @throws ParseException
+     */
     public Optional<List<HorseDto>> showEligableHorses(TimeDto time) throws ParseException {
         Date dtime = null;
         if (time == null || time.getTime() == null || time.getTime().length() == 0) {
@@ -78,6 +94,14 @@ public class ScheduleService {
         return Optional.ofNullable(result);
     }
 
+    /**
+     * zeigt Schedule Objekte, die zu einer bestimmten Uhrzeit in Frage kommen für die Futterausgabe
+     * @param time
+     *     Die Uhrzeit, um zu überprüfen, welche Schedule Objekte in Frage kommen
+     * @return Optional<ScheduleDto>
+     *     Optional von dem Schedule, dass zu einer bestimmten Uhrzeit in Frage kommt
+     * @throws ParseException
+     */
     public Optional<ScheduleDto> showScheduleForFeeding(TimeDto time) throws ParseException {
         ScheduleDto scheduleDto = new ScheduleDto();
         scheduleDto.setStart(time.getTime());
@@ -94,7 +118,14 @@ public class ScheduleService {
         return Optional.empty();
     }
 
-
+    /**
+     * fügt ein neues Schedule Objekt hinzu
+     * @param scheduleDto
+     *     Das neue Schedule Objekt
+     * @return Optional<ScheduleDto>
+     *     Optional von dem Schedule Objekt, dass hinzugefügt wurde
+     * @throws ParseException
+     */
     public Optional<ScheduleDto> addNewSchedule(ScheduleDto scheduleDto) throws ParseException {
         if (scheduleDto == null) {
             return Optional.empty();
@@ -132,6 +163,14 @@ public class ScheduleService {
 
     }
 
+    /**
+     * löscht ein bestimmtes Schedule Objekt mit einer bestimmten ID
+     * @param id
+     *     Die ID von dem Schedule Objekt, dass gelöscht werden soll
+     * @return Optional<ScheduleDto>
+     *     Optional von dem SChedule Objekt, dass gelöscht wurde
+     * @throws ParseException
+     */
     public Optional<ScheduleDto> deleteScheduleById(Long id) throws ParseException {
         if (id == null) {
             return Optional.empty();
@@ -146,7 +185,14 @@ public class ScheduleService {
         return Optional.ofNullable(result);
     }
 
-
+    /**
+     * überprüft, ob ein Schedule Objekt mit den anderen Schedule Objekten überlappt
+     * @param scheduleDto
+     *      Das Schedule Objekt, dass man aus Überlappungen überprüfen will
+     * @return boolean
+     *     true: Schedule Objekt überlappt sich, false: Schedule Objekt überlappt sich nicht
+     * @throws ParseException
+     */
     private boolean checkForOverlap(ScheduleDto scheduleDto) throws ParseException {
         List<Schedule> scheduleList = scheduleRepository.findAll();
         Date startDto = new SimpleDateFormat("HH:mm").parse(scheduleDto.getStart());

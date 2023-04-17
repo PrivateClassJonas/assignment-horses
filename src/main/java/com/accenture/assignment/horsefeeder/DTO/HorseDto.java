@@ -1,5 +1,8 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
+/**
+ * Die Pferd Klasse für die Verwendung von Pferde Objekten in Abfragen oder Service Methoden
+ */
 public class HorseDto {
     private String guid;
     private String name;

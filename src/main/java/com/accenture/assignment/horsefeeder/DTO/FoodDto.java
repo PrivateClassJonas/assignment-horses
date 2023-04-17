@@ -1,5 +1,7 @@
 package com.accenture.assignment.horsefeeder.DTO;
-
+/**
+ * Die Futter Klasse für die Verwendung von Futter Objekten in Abfragen oder Service Methoden
+ */
 public class FoodDto {
     private String name;
 
