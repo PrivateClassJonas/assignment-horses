@@ -14,9 +14,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface HistoryMapper {
     List<HistoryDto> historyToHistoryDtos(List<History> histories);
+
     @Mapping(target = "horseName", source = "horse.name")
     @Mapping(target = "horseGuid", source = "horse.guid")
     HistoryDto scheduleToScheduleDto(History history);
 
-    History historyDtoToHistory(HistoryDto historyDto);
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -46,13 +45,13 @@ public class ScheduleService {
 
     public Optional<List<HorseDto>> showEligableHorses(TimeDto time) throws ParseException {
         Date dtime = null;
-        if(time == null || time.getTime() == null ||  time.getTime().length()==0){
+        if (time == null || time.getTime() == null || time.getTime().length() == 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.set(Calendar.HOUR_OF_DAY, LocalTime.now().getHour());
             calendar.set(Calendar.MINUTE, LocalTime.now().getMinute());
             dtime = calendar.getTime();
-        }else {
+        } else {
             try {
                 dtime = new SimpleDateFormat("HH:mm").parse(time.getTime());
             } catch (Exception e) {
@@ -66,20 +65,20 @@ public class ScheduleService {
             Date end = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
             int compare1 = start.compareTo(dtime);
             int compare2 = dtime.compareTo(end);
-            if( compare1 == 0 || compare1 == compare2){
+            if (compare1 == 0 || compare1 == compare2) {
                 horseList.get().add((horseRepository.findByGuid(schedule.getHorse().getGuid())).get());
                 break;
             }
         }
-        if(horseList.get().isEmpty()){
+        if (horseList.get().isEmpty()) {
             return Optional.empty();
         }
 
         List<HorseDto> result = horseMapper.horseTohorseDtos(horseList.get());
         return Optional.ofNullable(result);
     }
+
     public Optional<ScheduleDto> showScheduleForFeeding(TimeDto time) throws ParseException {
-        //List<ScheduleDto> scheduleList = scheduleMapper.scheduleToscheduleDtos(scheduleRepository.findAll());
         ScheduleDto scheduleDto = new ScheduleDto();
         scheduleDto.setStart(time.getTime());
         List<Schedule> scheduleList = scheduleRepository.findAll();
@@ -88,7 +87,7 @@ public class ScheduleService {
         for (Schedule schedule : scheduleList) {
             Date start = new SimpleDateFormat("HH:mm").parse(schedule.getStart());
             Date end = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
-            if(timeToCheck.compareTo(start) == 0 || (timeToCheck.compareTo(start)>0 && timeToCheck.compareTo(end)<0)){
+            if (timeToCheck.compareTo(start) == 0 || (timeToCheck.compareTo(start) > 0 && timeToCheck.compareTo(end) < 0)) {
                 return Optional.ofNullable(scheduleMapper.scheduleToScheduleDto(schedule));
             }
         }
@@ -100,27 +99,27 @@ public class ScheduleService {
         if (scheduleDto == null) {
             return Optional.empty();
         }
-        if(!checkForOverlap(scheduleDto)){
+        if (!checkForOverlap(scheduleDto)) {
             return Optional.empty();
         }
         Date start = new SimpleDateFormat("HH:mm").parse(scheduleDto.getStart());
         Date end = new SimpleDateFormat("HH:mm").parse(scheduleDto.getEnd());
-        if(start.after(end)){
+        if (start.after(end)) {
             return Optional.empty();
         }
         List<Schedule> schedules = scheduleRepository.findAll();
         int index = 0;
         for (Schedule schedule : schedules) {
-            if(scheduleDto.getHorseGuid().equals(schedule.getHorse().getGuid())){
+            if (scheduleDto.getHorseGuid().equals(schedule.getHorse().getGuid())) {
                 index++;
             }
         }
-        if(index>=5){
+        if (index >= 5) {
             return Optional.empty();
         }
         Optional<Food> food = foodRepository.findById(scheduleDto.getFoodId());
         Optional<Horse> horse = horseRepository.findByGuid(scheduleDto.getHorseGuid());
-        if(food.isEmpty() || horse.isEmpty()){
+        if (food.isEmpty() || horse.isEmpty()) {
             return Optional.empty();
         }
         Schedule schedule = scheduleMapper.scheduleDtoToSchedule(scheduleDto);
@@ -158,7 +157,7 @@ public class ScheduleService {
             Date end = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
             int compare1 = start.compareTo(endDto);
             int compare2 = startDto.compareTo(end);
-            if(compare1 == compare2){
+            if (compare1 == compare2) {
                 return false;
             }
         }

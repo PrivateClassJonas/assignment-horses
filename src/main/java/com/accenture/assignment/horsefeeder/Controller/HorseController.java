@@ -1,9 +1,7 @@
 package com.accenture.assignment.horsefeeder.Controller;
 
 import com.accenture.assignment.horsefeeder.DTO.HorseDto;
-import com.accenture.assignment.horsefeeder.DTO.StableDto;
 import com.accenture.assignment.horsefeeder.Service.HorseService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +16,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class HorseController {
     @Autowired
     private HorseService horseService;
+
     @GetMapping("/")
     public ResponseEntity<List<HorseDto>> showHorses() {
         Optional<List<HorseDto>> response = horseService.showHorses();
@@ -35,7 +34,7 @@ public class HorseController {
 
     @PostMapping(path = "/")
     public @ResponseBody ResponseEntity<HorseDto> addNewHorse(
-           @RequestBody HorseDto horseDto) {
+            @RequestBody HorseDto horseDto) {
         Optional<HorseDto> response = horseService.addNewHorse(horseDto);
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());

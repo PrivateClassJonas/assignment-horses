@@ -2,6 +2,8 @@ package com.accenture.assignment.horsefeeder.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "feeding_history")
 public class History {
@@ -73,3 +75,4 @@ public class History {
         this.food = food;
     }
 }
+

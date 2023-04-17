@@ -13,10 +13,8 @@ import java.util.List;
 public interface HorseMapper {
     List<HorseDto> horseTohorseDtos(List<Horse> horses);
 
-    //@Mapping(target = "ahAdresse", source = "adresse")
     Horse horseDtoToHorse(HorseDto dto);
 
-    //@Mapping(target = "adresse", source = "ahAdresse")
     @Mapping(target = "stableName", source = "stable.name")
     @Mapping(target = "stableId", source = "stable.id")
     HorseDto horseToHorseDto(Horse horse);

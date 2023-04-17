@@ -2,7 +2,6 @@ package com.accenture.assignment.horsefeeder.Controller;
 
 import com.accenture.assignment.horsefeeder.DTO.StableDto;
 import com.accenture.assignment.horsefeeder.Service.StableService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +57,4 @@ public class StableController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
-
-
 }

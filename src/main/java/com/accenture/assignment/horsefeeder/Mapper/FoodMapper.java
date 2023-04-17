@@ -13,10 +13,8 @@ import java.util.List;
 public interface FoodMapper {
     List<FoodDto> foodToFoodDtos(List<Food> foods);
 
-    //@Mapping(target = "ahAdresse", source = "adresse")
     Food foodDtoToFood(FoodDto dto);
 
-    //@Mapping(target = "adresse", source = "ahAdresse")
     FoodDto foodToFoodDto(Food food);
 
 

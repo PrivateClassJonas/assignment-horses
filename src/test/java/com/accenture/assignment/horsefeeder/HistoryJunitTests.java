@@ -147,6 +147,17 @@ public class HistoryJunitTests {
         List<MissedAmountDto> missedAmounts = new ObjectMapper().readValue(content2, new TypeReference<List<MissedAmountDto>>(){});
         assertEquals("123456789", missedAmounts.get(0).getGuid());
     }
+    @Test
+    public void showEligaleHoursTrue()throws Exception{
+        historyRepository.deleteAll();
+        TimeDto time = new TimeDto();
+        time.setTime("18:00");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(time);
+        List<MissedEligibleDto> eligables = historyService.showMissedEligible(time).get();
+        assertEquals("5",eligables.get(0).getAmountTime());
+        assertEquals("123456789",eligables.get(0).getHorseGuid());
+    }
 
     @Test
     public void releaseFoodTrue()throws Exception{

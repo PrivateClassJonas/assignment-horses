@@ -11,10 +11,8 @@ import java.util.List;
 public interface StableMapper {
     List<StableDto> stableToStableDtos(List<Stable> stables);
 
-    //@Mapping(target = "ahAdresse", source = "adresse")
     Stable stableDtoToStable(StableDto dto);
 
-    //@Mapping(target = "adresse", source = "ahAdresse")
     StableDto stableToStableDto(Stable stable);
 
 

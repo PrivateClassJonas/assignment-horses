@@ -1,5 +1,9 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
+import com.accenture.assignment.horsefeeder.Entities.Food;
+
+import java.util.Set;
+
 public class ScheduleDto {
 
     private String start;
@@ -41,7 +45,7 @@ public class ScheduleDto {
         this.horseGuid = horseGuid;
     }
 
-    public String getFoodName() {
+   public String getFoodName() {
         return foodName;
     }
 

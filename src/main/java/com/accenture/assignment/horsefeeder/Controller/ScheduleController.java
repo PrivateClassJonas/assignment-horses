@@ -1,6 +1,5 @@
 package com.accenture.assignment.horsefeeder.Controller;
 
-import com.accenture.assignment.horsefeeder.DTO.HistoryDto;
 import com.accenture.assignment.horsefeeder.DTO.HorseDto;
 import com.accenture.assignment.horsefeeder.DTO.ScheduleDto;
 import com.accenture.assignment.horsefeeder.DTO.TimeDto;
@@ -34,7 +33,7 @@ public class ScheduleController {
         return ResponseEntity.ok(response.get());
     }
 
-    @DeleteMapping(path="/{id}")
+    @DeleteMapping(path = "/{id}")
     public @ResponseBody ResponseEntity<ScheduleDto> deleteScheduleById(
             @PathVariable Long id) throws ParseException {
         Optional<ScheduleDto> response = scheduleService.deleteScheduleById(id);
@@ -42,29 +41,11 @@ public class ScheduleController {
         return ResponseEntity.ok(response.get());
     }
 
-    @GetMapping(path="/eligable/")
+    @GetMapping(path = "/eligable/")
     public @ResponseBody ResponseEntity<List<HorseDto>> showEligableHorses(
             @RequestBody TimeDto time) throws ParseException {
         Optional<List<HorseDto>> response = scheduleService.showEligableHorses(time);
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
-   /* @PutMapping(path="/{id}")
-    public @ResponseBody ResponseEntity<ScheduleDto> updateStatus(
-            @PathVariable("id") Long id,
-            @RequestBody String status){
-        Optional<ScheduleDto> response = scheduleService.updateStatus(id, status);
-        if (response.isEmpty()) ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(response.get());
-    }*/
-
-
-    /*@PutMapping(path = "/{horseGuid}")
-    public @ResponseBody ResponseEntity<ScheduleDto> releaseFood(
-            @PathVariable("horseGuid") String horseGuid) throws ParseException {
-        Optional<ScheduleDto> response = scheduleService.releaseFood(horseGuid);
-        if (response.isEmpty()) ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(response.get());
-    }*/
-
 }

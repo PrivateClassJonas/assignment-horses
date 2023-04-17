@@ -2,8 +2,10 @@ package com.accenture.assignment.horsefeeder.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
-@Table(name="feeding_schedule")
+@Table(name = "feeding_schedule")
 public class Schedule {
     @Id
     @Column(name = "id")
@@ -22,7 +24,6 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "food_id")
     private Food food;
-
 
 
     public Long getId() {
@@ -64,6 +65,5 @@ public class Schedule {
     public void setFood(Food food) {
         this.food = food;
     }
-
 
 }

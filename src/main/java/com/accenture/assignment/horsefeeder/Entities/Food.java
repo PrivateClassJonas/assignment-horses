@@ -2,6 +2,8 @@ package com.accenture.assignment.horsefeeder.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "food")
 public class Food {
@@ -28,4 +30,5 @@ public class Food {
     public void setName(String name) {
         this.name = name;
     }
+
 }
