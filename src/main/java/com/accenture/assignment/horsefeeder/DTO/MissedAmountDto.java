@@ -9,6 +9,10 @@ public class MissedAmountDto {
         this.amount=amount;
     }
 
+    public MissedAmountDto(){
+
+    }
+
     public Integer getAmount() {
         return amount;
     }

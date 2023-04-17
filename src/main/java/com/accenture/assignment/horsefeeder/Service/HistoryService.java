@@ -4,6 +4,7 @@ import com.accenture.assignment.horsefeeder.DTO.*;
 import com.accenture.assignment.horsefeeder.Entities.Food;
 import com.accenture.assignment.horsefeeder.Entities.History;
 import com.accenture.assignment.horsefeeder.Entities.Horse;
+import com.accenture.assignment.horsefeeder.Entities.Schedule;
 import com.accenture.assignment.horsefeeder.Mapper.HistoryMapper;
 import com.accenture.assignment.horsefeeder.Mapper.HorseMapper;
 import com.accenture.assignment.horsefeeder.Mapper.ScheduleMapper;
@@ -15,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,21 +32,26 @@ public class HistoryService {
     private HorseMapper horseMapper;
     private HistoryRepository historyRepository;
     private ScheduleService scheduleService;
+    private ScheduleRepository scheduleRepository;
     private HorseRepository horseRepository;
     private FoodRepository foodRepository;
 
-    public HistoryService(ScheduleService scheduleService, FoodRepository foodRepository, HorseRepository horseRepository, HistoryRepository historyRepository) {
+    public HistoryService(ScheduleRepository scheduleRepository, ScheduleService scheduleService, FoodRepository foodRepository, HorseRepository horseRepository, HistoryRepository historyRepository) {
         this.horseRepository = horseRepository;
         this.historyRepository = historyRepository;
         this.foodRepository = foodRepository;
         this.scheduleService = scheduleService;
+        this.scheduleRepository = scheduleRepository;
     }
 
-    public Optional<HistoryDto> setMissedFeeding(String guid) throws ParseException {
-        TimeDto time = new TimeDto();
-        time.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+    public Optional<HistoryDto> setMissedFeeding(String guid, TimeDto time) throws ParseException {
+        /*TimeDto time = new TimeDto();
+        time.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));*/
         Optional<ScheduleDto> schedule = scheduleService.showScheduleForFeeding(time);
         Horse horse = horseRepository.findByGuid(guid).get();
+        if(!schedule.get().getHorseGuid().equals(guid)){
+            return Optional.empty();
+        }
         History history = new History();
         history.setTime(time.getTime());
         history.setStatus("missed");
@@ -82,16 +90,21 @@ public class HistoryService {
     }
 
 
-    public Optional<HistoryDto> releaseFood(String guid) throws ParseException {
+    public Optional<HistoryDto> releaseFood(String guid, TimeDto time) throws ParseException {
         List<History> histories = historyRepository.findAll();
-        TimeDto time = new TimeDto();
+        //TimeDto time = new TimeDto();
         //LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-        time.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        //time.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         Optional<List<HorseDto>> horses = scheduleService.showEligableHorses(time);
         Optional<ScheduleDto> schedule = scheduleService.showScheduleForFeeding(time);
-        for (History history : histories) {
-            if (history.getTime().equals(schedule.get().getStart())) {
-                return Optional.empty();
+        if(!horses.get().get(0).getGuid().equals(schedule.get().getHorseGuid())){
+            return Optional.empty();
+        }
+        if(!histories.isEmpty()) {
+            for (History history : histories) {
+                if (history.getTime().equals(schedule.get().getStart())) {
+                    return Optional.empty();
+                }
             }
         }
         if (horses.isEmpty()) {
@@ -115,8 +128,14 @@ public class HistoryService {
         history.setHorse(horseRepository.findByGuid(guid).get());
         history.setStatus("done");
         history.setTime(schedule.get().getStart());
-        Food f = foodRepository.findById(1L).get();
-        history.setFood(f);
+        List<Food> foods = foodRepository.findAll();
+        Food foodToSave = null;
+        for (Food food : foods) {
+            if(food.getId() == schedule.get().getFoodId()){
+                foodToSave = foodRepository.findById(food.getId()).get();
+            }
+        }
+        history.setFood(foodToSave);
         History savedHistory = historyRepository.save(history);
         HistoryDto result = historyMapper.scheduleToScheduleDto(savedHistory);
         return Optional.ofNullable(result);
@@ -135,22 +154,37 @@ public class HistoryService {
         return Optional.ofNullable(historyDtoList);
     }
 
-    public Optional<MissedEligibleDto> showMissedEligible() throws ParseException {
-        TimeDto time = new TimeDto();
-        time.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+    public Optional<List<MissedEligibleDto>> showMissedEligible(TimeDto time) throws ParseException {
         Optional<List<HorseDto>> horses = scheduleService.showEligableHorses(time);
         List<History> historyList = historyRepository.findAll();
-        for (HorseDto horseDto : horses.get()) {
-            for (History history : historyList) {
-                if(history.getHorse().getGuid().equals(horseDto.getGuid())){
-                    return Optional.empty();
+        List<Schedule> schedulesToCheck = scheduleRepository.findAll();
+        List<Schedule> schedulesToSave = new ArrayList<>();
+        Date timeToCheck = new SimpleDateFormat("HH:mm").parse(time.getTime());
+        for (Schedule schedule : schedulesToCheck) {
+            Date start = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
+            if(timeToCheck.after(start)){
+                boolean isFed = false;
+                for (History history : historyList) {
+                    if(history.getTime().equals(schedule.getStart())){
+                        isFed = true;
+                        break;
+                    }
+                }
+                if(!isFed){
+                    schedulesToSave.add(schedule);
                 }
             }
         }
-        MissedEligibleDto missedEligibleDto = new MissedEligibleDto();
-        missedEligibleDto.setTime(time.getTime());
-        missedEligibleDto.setHorseGuid(horses.get().get(0).getGuid());
-        return Optional.ofNullable(missedEligibleDto);
+        List<MissedEligibleDto> missedEligible = new ArrayList<>();
+        for (Schedule schedule : schedulesToSave) {
+            MissedEligibleDto missedEligibleDto = new MissedEligibleDto();
+            Date start = new SimpleDateFormat("HH:mm").parse(schedule.getEnd());
+            Long missedHours = (timeToCheck.getTime()-start.getTime())/1000/60/60;
+            missedEligibleDto.setAmountTime(missedHours.toString());
+            missedEligibleDto.setHorseGuid(schedule.getHorse().getGuid());
+            missedEligible.add(missedEligibleDto);
+        }
+        return Optional.ofNullable(missedEligible);
     }
 
     public Optional<List<MissedFeedingDto>> showMissed() {

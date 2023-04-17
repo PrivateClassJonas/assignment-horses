@@ -33,6 +33,15 @@ public class ScheduleController {
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
+
+    @DeleteMapping(path="/{id}")
+    public @ResponseBody ResponseEntity<ScheduleDto> deleteScheduleById(
+            @PathVariable Long id) throws ParseException {
+        Optional<ScheduleDto> response = scheduleService.deleteScheduleById(id);
+        if (response.isEmpty()) ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response.get());
+    }
+
     @GetMapping(path="/eligable/")
     public @ResponseBody ResponseEntity<List<HorseDto>> showEligableHorses(
             @RequestBody TimeDto time) throws ParseException {

@@ -1,15 +1,15 @@
 package com.accenture.assignment.horsefeeder.DTO;
 
 public class MissedEligibleDto {
-    private String time;
+    private String amountTime;
     private String horseGuid;
 
-    public String getTime() {
-        return time;
+    public String getAmountTime() {
+        return amountTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setAmountTime(String amountTime) {
+        this.amountTime = amountTime;
     }
 
     public String getHorseGuid() {

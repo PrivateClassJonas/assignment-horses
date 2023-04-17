@@ -19,16 +19,18 @@ public class HistoryController {
 
     @PostMapping(path = "/{horseGuid}")
     public @ResponseBody ResponseEntity<HistoryDto> releaseFood(
-            @PathVariable("horseGuid") String horseGuid) throws ParseException {
-        Optional<HistoryDto> response = historyService.releaseFood(horseGuid);
+            @PathVariable("horseGuid") String horseGuid,
+            @RequestBody TimeDto time) throws ParseException {
+        Optional<HistoryDto> response = historyService.releaseFood(horseGuid, time);
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
 
     @PostMapping(path = "/missed/{horseGuid}")
     public @ResponseBody ResponseEntity<HistoryDto> setMissedFeeding(
-            @PathVariable("horseGuid") String horseGuid) throws ParseException {
-        Optional<HistoryDto> response = historyService.setMissedFeeding(horseGuid);
+            @PathVariable("horseGuid") String horseGuid,
+            @RequestBody TimeDto time) throws ParseException {
+        Optional<HistoryDto> response = historyService.setMissedFeeding(horseGuid,time);
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }
@@ -39,8 +41,9 @@ public class HistoryController {
         return ResponseEntity.ok(response.get());
     }
     @GetMapping("/eligable")
-    public ResponseEntity<MissedEligibleDto> showMissedEligable() throws ParseException {
-        Optional<MissedEligibleDto> response = historyService.showMissedEligible();
+    public ResponseEntity<List<MissedEligibleDto>> showMissedEligable(
+            @RequestBody TimeDto time) throws ParseException {
+        Optional<List<MissedEligibleDto>> response = historyService.showMissedEligible(time);
         if (response.isEmpty()) ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response.get());
     }

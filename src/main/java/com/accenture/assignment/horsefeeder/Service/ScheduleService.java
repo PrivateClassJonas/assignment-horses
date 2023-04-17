@@ -1,9 +1,6 @@
 package com.accenture.assignment.horsefeeder.Service;
 
-import com.accenture.assignment.horsefeeder.DTO.HistoryDto;
-import com.accenture.assignment.horsefeeder.DTO.HorseDto;
-import com.accenture.assignment.horsefeeder.DTO.ScheduleDto;
-import com.accenture.assignment.horsefeeder.DTO.TimeDto;
+import com.accenture.assignment.horsefeeder.DTO.*;
 import com.accenture.assignment.horsefeeder.Entities.*;
 import com.accenture.assignment.horsefeeder.Mapper.HorseMapper;
 import com.accenture.assignment.horsefeeder.Mapper.ScheduleMapper;
@@ -134,6 +131,20 @@ public class ScheduleService {
         ScheduleDto result = scheduleMapper.scheduleToScheduleDto(savedSchedule);
         return Optional.ofNullable(result);
 
+    }
+
+    public Optional<ScheduleDto> deleteScheduleById(Long id) throws ParseException {
+        if (id == null) {
+            return Optional.empty();
+        }
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+        if (optionalSchedule.isEmpty()) {
+            return Optional.empty();
+        }
+        Schedule deleteSchedule = optionalSchedule.get();
+        scheduleRepository.delete(deleteSchedule);
+        ScheduleDto result = scheduleMapper.scheduleToScheduleDto(deleteSchedule);
+        return Optional.ofNullable(result);
     }
 
 
